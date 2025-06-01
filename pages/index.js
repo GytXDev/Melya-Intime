@@ -93,7 +93,10 @@ export default function MelyaProfile() {
             Melya Ndong
             <img src="/gabon.png" alt="Gabon" className="w-8 h-5 object-contain rounded-sm" />
           </h1>
-          <p className="text-pink-600 italic mt-1">Tu n’as encore rien vu...</p>
+          <p className="text-pink-600 italic mt-1">
+            Juste un aperçu… c’est tout ce qu’ils ont eu. <br />
+            Mais toi, si tu veux plus… 🙈 il va falloir assumer 😈.
+          </p>
 
           {showModal && (
             <PaymentModal
@@ -118,8 +121,9 @@ export default function MelyaProfile() {
           {!hasPaid && (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 text-white rounded-xl">
               <p className="text-center mb-3 text-sm px-4 italic">
-                Une seule façon de la voir comme jamais auparavant.
+                Tu crois tout savoir… et si j’étais bien plus cochonne que ce que tu imagines ?
               </p>
+
               <button
                 onClick={() => setShowModal(true)}
                 className="bg-pink-600 hover:bg-pink-700 text-white px-5 py-2 rounded-full text-sm font-semibold shadow-lg"
@@ -197,16 +201,16 @@ export default function MelyaProfile() {
         )}
 
         {/* Bouton de réinitialisation (facultatif) */}
-        {/* <button
-        onClick={() => {
-          localStorage.removeItem("hasPaidMelya");
-          setHasPaid(false);
-          window.location.reload();
-        }}
-        className="mt-6 text-xs text-gray-400 hover:underline"
-      >
-        Réinitialiser (dev)
-      </button> */}
+        <button
+          onClick={() => {
+            localStorage.removeItem("hasPaidMelya");
+            setHasPaid(false);
+            window.location.reload();
+          }}
+          className="mt-6 text-xs text-gray-400 hover:underline"
+        >
+          Réinitialiser (dev)
+        </button>
       </div>
     </>
   );

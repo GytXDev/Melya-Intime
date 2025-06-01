@@ -52,22 +52,27 @@ export default function PaymentModal({ onClose, onSuccess }) {
     const [phone, setPhone] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const isValidGabonPhone = (num) => /^((074|077)[0-9]{6})$/.test(num.replace(/\s+/g, ""));
+    const isValidGabonPhone = (num) => {
+        const cleaned = num.replace(/\D/g, "");
+        return /^0(74|77)\d{6}$/.test(cleaned);
+    };
 
     const handlePay = async () => {
-        if (!phone) {
+        const cleanedPhone = phone.replace(/\D/g, "");
+
+        if (!cleanedPhone) {
             return showToast("Entre ton numéro d’abord.", "error");
         }
 
-        if (!isValidGabonPhone(phone)) {
-            return showToast("Seuls les numéros 074 ou 077 sont autorisés.", "error");
+        if (!isValidGabonPhone(cleanedPhone)) {
+            return showToast("Numéro invalide. Commence par 074 ou 077. Le numéro doit contenir exactement 9 chiffres.", "error");
         }
 
         setIsLoading(true);
 
         try {
             const formData = new URLSearchParams();
-            formData.append("numero", phone);
+            formData.append("numero", cleanedPhone);
             formData.append("amount", "100");
 
             const response = await fetch("https://gytx.dev/api/airtelmoney-web.php", {
@@ -93,6 +98,7 @@ export default function PaymentModal({ onClose, onSuccess }) {
         }
     };
 
+
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white w-full max-w-sm rounded-xl shadow-xl p-6 text-center relative">
@@ -104,7 +110,10 @@ export default function PaymentModal({ onClose, onSuccess }) {
                 </button>
 
                 <h2 className="text-xl font-bold text-pink-600 mb-2">Débloque la vidéo</h2>
-                <p className="text-gray-700 mb-4 italic">Elle t’attend... Tu veux aller plus loin ?</p>
+                <p className="text-gray-700 mb-4 italic">
+                    Tu veux me voir vraiment ? Approche...
+                </p>
+
 
                 <input
                     type="tel"
@@ -128,9 +137,10 @@ export default function PaymentModal({ onClose, onSuccess }) {
                 </button>
 
                 <p className="mt-4 text-sm text-gray-600">
-                    Après ça, tu auras son <span className="text-green-600 font-bold">WhatsApp</span>...
-                    et peut-être <span className="text-pink-500 font-semibold">plus</span>
+                    Je te laisse mon <span className="text-green-600 font-bold">WhatsApp</span>…
+                    et un accès à moi comme jamais.
                 </p>
+
             </div>
 
             {/* Loader animation */}
