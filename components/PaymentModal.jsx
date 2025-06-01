@@ -1,0 +1,155 @@
+import { useState } from "react";
+
+// Toast stylé
+function showToast(message, type = "info") {
+    const toast = document.createElement("div");
+    toast.textContent = message;
+
+    const bgColor = {
+        success: "bg-green-600",
+        error: "bg-red-600",
+        info: "bg-gray-800",
+    }[type];
+
+    toast.className = `
+    fixed bottom-6 left-1/2 -translate-x-1/2 z-50 
+    px-5 py-3 rounded-md text-white text-sm shadow-lg
+    ${bgColor} animate-slidein
+  `;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add("animate-slideout");
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Injecte les animations toast
+if (typeof window !== "undefined" && !document.getElementById("toast-animation-style")) {
+    const style = document.createElement("style");
+    style.id = "toast-animation-style";
+    style.textContent = `
+    @keyframes slidein {
+      from { transform: translate(-50%, 30px); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+    @keyframes slideout {
+      from { transform: translate(-50%, 0); opacity: 1; }
+      to { transform: translate(-50%, 30px); opacity: 0; }
+    }
+    .animate-slidein {
+      animation: slidein 0.4s ease-out forwards;
+    }
+    .animate-slideout {
+      animation: slideout 0.3s ease-in forwards;
+    }
+  `;
+    document.head.appendChild(style);
+}
+
+export default function PaymentModal({ onClose, onSuccess }) {
+    const [phone, setPhone] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    const isValidGabonPhone = (num) => /^((074|077)[0-9]{6})$/.test(num.replace(/\s+/g, ""));
+
+    const handlePay = async () => {
+        if (!phone) {
+            return showToast("Entre ton numéro d’abord.", "error");
+        }
+
+        if (!isValidGabonPhone(phone)) {
+            return showToast("Seuls les numéros 074 ou 077 sont autorisés.", "error");
+        }
+
+        setIsLoading(true);
+
+        try {
+            const formData = new URLSearchParams();
+            formData.append("numero", phone);
+            formData.append("amount", "100");
+
+            const response = await fetch("https://gytx.dev/api/airtelmoney-web.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: formData.toString(),
+            });
+
+            const result = await response.json();
+
+            if (/success|successfully processed/i.test(result.status_message)) {
+                showToast("Paiement validé !", "success");
+                onSuccess();
+            } else {
+                showToast(result.status_message || "Échec du paiement", "error");
+            }
+        } catch (error) {
+            showToast("Erreur réseau. Réessaie.", "error");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white w-full max-w-sm rounded-xl shadow-xl p-6 text-center relative">
+                <button
+                    onClick={onClose}
+                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+                >
+                    ✖
+                </button>
+
+                <h2 className="text-xl font-bold text-pink-600 mb-2">Débloque la vidéo</h2>
+                <p className="text-gray-700 mb-4 italic">Elle t’attend... Tu veux aller plus loin ?</p>
+
+                <input
+                    type="tel"
+                    placeholder="Ex: 077123456"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 9))}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-pink-500 text-center"
+                />
+
+                <button
+                    onClick={handlePay}
+                    disabled={isLoading}
+                    className={`w-full ${isLoading ? "bg-pink-300" : "bg-pink-600 hover:bg-pink-700"
+                        } text-white py-2 rounded-md font-semibold flex items-center justify-center gap-2`}
+                >
+                    {isLoading ? (
+                        <span className="loader"></span>
+                    ) : (
+                        "Lancer le paiement"
+                    )}
+                </button>
+
+                <p className="mt-4 text-sm text-gray-600">
+                    Après ça, tu auras son <span className="text-green-600 font-bold">WhatsApp</span>...
+                    et peut-être <span className="text-pink-500 font-semibold">plus</span>
+                </p>
+            </div>
+
+            {/* Loader animation */}
+            <style jsx>{`
+        .loader {
+          border: 3px solid #f3f3f3;
+          border-top: 3px solid #fff;
+          border-right: 3px solid #fff;
+          border-radius: 50%;
+          width: 18px;
+          height: 18px;
+          animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+        </div>
+    );
+}
