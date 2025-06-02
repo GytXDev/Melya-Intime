@@ -90,7 +90,7 @@ export default function MelyaProfile() {
             className="w-32 h-32 rounded-full object-cover border-4 border-pink-500 mx-auto"
           />
           <h1 className="text-3xl font-bold mt-2 flex items-center justify-center gap-2">
-            Melya Ndong
+            Melya
             <img src="/gabon.png" alt="Gabon" className="w-8 h-5 object-contain rounded-sm" />
           </h1>
           <p className="text-pink-600 italic mt-1">
