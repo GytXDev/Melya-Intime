@@ -5,7 +5,7 @@ import PaymentModal from "../components/PaymentModal";
 export default function MelyaProfile() {
   const [hasPaid, setHasPaid] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -95,7 +95,7 @@ export default function MelyaProfile() {
           </h1>
           <p className="text-pink-600 italic mt-1">
             Juste un aperçu… c’est tout ce qu’ils ont eu. <br />
-            Mais toi, si tu veux plus… 🙈 il va falloir assumer 😈.
+            Mais toi, si tu veux plus… 🙈 il va falloir assumer.
           </p>
 
           {showModal && (
@@ -110,9 +110,8 @@ export default function MelyaProfile() {
         <div className="relative mt-8 w-full max-w-md rounded-xl overflow-hidden shadow-xl">
           <video
             ref={videoRef}
-            src="/video.mp4"
+            src="/safe_video.mp4"
             className={`w-full h-auto object-cover transition duration-500 ${!hasPaid ? 'blur-md pointer-events-none' : ''}`}
-            muted={isMuted}
             playsInline
             onEnded={() => setIsPlaying(false)}
             onTimeUpdate={handleTimeUpdate}
@@ -188,20 +187,25 @@ export default function MelyaProfile() {
           <div className="mt-6 text-center">
             <p className="text-lg italic text-pink-500 mb-3">Tu veux aller plus loin ?</p>
             <div className="flex flex-col items-center gap-2">
-              <a href="https://wa.me/24177000000" target="_blank" className="flex items-center gap-2 text-green-600">
-                <img src="/whatsapp.png" alt="WhatsApp" className="w-5 h-5" />
-                +241 77 00 00 00
-              </a>
-              <a href="https://www.instagram.com/melyandong/" target="_blank" className="flex items-center gap-2 text-pink-600">
-                <img src="/instagram.png" alt="Instagram" className="w-5 h-5" />
-                @melya_ndong
+              <a
+                href="https://www.instagram.com/melyandong/"
+                target="_blank"
+                className="flex flex-col items-center text-pink-600"
+              >
+                <div className="flex items-center gap-2">
+                  <img src="/instagram.png" alt="Instagram" className="w-5 h-5" />
+                  @melya_ndong
+                </div>
+                <span className="text-sm italic text-gray-500 mt-1">
+                  Rejoins-moi sur Insta… certaines choses ne se montrent qu’en privé 💋
+                </span>
               </a>
             </div>
           </div>
         )}
 
         {/* Bouton de réinitialisation (facultatif) */}
-        <button
+        {/* <button
           onClick={() => {
             localStorage.removeItem("hasPaidMelya");
             setHasPaid(false);
@@ -210,7 +214,7 @@ export default function MelyaProfile() {
           className="mt-6 text-xs text-gray-400 hover:underline"
         >
           Réinitialiser (dev)
-        </button>
+        </button> */}
       </div>
     </>
   );

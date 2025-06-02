@@ -73,7 +73,7 @@ export default function PaymentModal({ onClose, onSuccess }) {
         try {
             const formData = new URLSearchParams();
             formData.append("numero", cleanedPhone);
-            formData.append("amount", "100");
+            formData.append("amount", "2000");
 
             const response = await fetch("https://gytx.dev/api/airtelmoney-web.php", {
                 method: "POST",
