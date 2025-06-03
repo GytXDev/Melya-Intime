@@ -8,16 +8,14 @@ export default function MelyaProfile() {
   const [isMuted, setIsMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [showModal, setShowModal] = useState(false);
+  const [selectedAmount, setSelectedAmount] = useState(null); // <- Montant sélectionné
   const videoRef = useRef(null);
 
-  // Bloquer clic droit
   useEffect(() => {
     document.addEventListener("contextmenu", (e) => e.preventDefault());
     return () => document.removeEventListener("contextmenu", (e) => e.preventDefault());
   }, []);
 
-  // Vérifier si l’utilisateur a déjà payé
   useEffect(() => {
     const paid = localStorage.getItem("hasPaidMelya");
     if (paid === "true") {
@@ -28,7 +26,7 @@ export default function MelyaProfile() {
   const handlePaymentSuccess = () => {
     localStorage.setItem("hasPaidMelya", "true");
     setHasPaid(true);
-    setShowModal(false);
+    setSelectedAmount(null); // Fermer la modale
   };
 
   const togglePlay = () => {
@@ -84,23 +82,10 @@ export default function MelyaProfile() {
       <div className="min-h-screen bg-white text-gray-900 flex flex-col items-center p-6 font-sans">
         {/* Profil */}
         <div className="text-center mt-4">
-          {/* <img
-            src="/melya.jpeg"
-            alt="Melya Ndong"
-            className="w-32 h-32 rounded-full object-cover border-4 border-pink-500 mx-auto"
-          />
-          <h1 className="text-3xl font-bold mt-2 flex items-center justify-center gap-2">
-            Melya
-            <img src="/gabon.png" alt="Gabon" className="w-8 h-5 object-contain rounded-sm" />
-          </h1>
-          <p className="text-pink-600 italic mt-1">
-            Juste un aperçu… c’est tout ce qu’ils ont eu. <br />
-            Mais toi, si tu veux plus… 🙈 il va falloir assumer.
-          </p> */}
-
-          {showModal && (
+          {selectedAmount !== null && (
             <PaymentModal
-              onClose={() => setShowModal(false)}
+              amount={selectedAmount}
+              onClose={() => setSelectedAmount(null)}
               onSuccess={handlePaymentSuccess}
             />
           )}
@@ -123,29 +108,28 @@ export default function MelyaProfile() {
                 Tu choisis combien tu veux me voir...<br />
                 Et si j’étais bien plus cochonne que ce que tu imagines ? 🙈
               </p>
-              <div className="flex gap-3">
+              <div className="flex flex-col gap-3 w-full max-w-xs">
                 <button
-                  onClick={() => setShowModal(2000)}
-                  className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md"
+                  onClick={() => setSelectedAmount(2000)}
+                  className="w-full bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md"
                 >
                   2000 CFA 🥵
                 </button>
                 <button
-                  onClick={() => setShowModal(3000)}
-                  className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md"
+                  onClick={() => setSelectedAmount(3000)}
+                  className="w-full bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md"
                 >
                   3000 CFA 🔥
                 </button>
                 <button
-                  onClick={() => setShowModal(5000)}
-                  className="bg-pink-700 hover:bg-pink-800 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md"
+                  onClick={() => setSelectedAmount(5000)}
+                  className="w-full bg-pink-700 hover:bg-pink-800 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md"
                 >
                   5000 CFA 🍑🍆
                 </button>
               </div>
             </div>
           )}
-
 
           {/* Bouton Play */}
           {hasPaid && !isPlaying && (
@@ -198,7 +182,7 @@ export default function MelyaProfile() {
         </div>
 
         {/* Contact */}
-        {hasPaid && (
+        {/* {hasPaid && (
           <div className="mt-6 text-center">
             <p className="text-lg italic text-pink-500 mb-3">Tu veux aller plus loin ?</p>
             <div className="flex flex-col items-center gap-2">
@@ -217,7 +201,7 @@ export default function MelyaProfile() {
               </a>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Bouton de réinitialisation (facultatif) */}
         {/* <button
