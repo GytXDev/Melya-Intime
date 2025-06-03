@@ -77,7 +77,7 @@ export default function MelyaProfile() {
   return (
     <>
       <Head>
-        <title>Melya Ndong</title>
+        <title>Juste moi</title>
         <meta name="description" content="Contenu privé réservé aux membres." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
