@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Toast stylé
 function showToast(message, type = "info") {
@@ -25,7 +25,33 @@ function showToast(message, type = "info") {
     }, 3000);
 }
 
-// Injecte les animations toast
+// Confettis animés 🎉
+function triggerConfetti() {
+    const canvas = document.createElement("canvas");
+    canvas.id = "confetti";
+    canvas.style.position = "fixed";
+    canvas.style.top = 0;
+    canvas.style.left = 0;
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.pointerEvents = "none";
+    canvas.style.zIndex = 1000;
+    document.body.appendChild(canvas);
+
+    import("canvas-confetti").then((module) => {
+        const confetti = module.default;
+        confetti.create(canvas, { resize: true })({
+            particleCount: 100,
+            spread: 90,
+            origin: { y: 0.6 },
+        });
+        setTimeout(() => {
+            canvas.remove();
+        }, 2000);
+    });
+}
+
+// Injecter les animations
 if (typeof window !== "undefined" && !document.getElementById("toast-animation-style")) {
     const style = document.createElement("style");
     style.id = "toast-animation-style";
@@ -48,7 +74,7 @@ if (typeof window !== "undefined" && !document.getElementById("toast-animation-s
     document.head.appendChild(style);
 }
 
-export default function PaymentModal({ onClose, onSuccess }) {
+export default function PaymentModal({ amount = 2000, onClose, onSuccess }) {
     const [phone, setPhone] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
@@ -73,7 +99,7 @@ export default function PaymentModal({ onClose, onSuccess }) {
         try {
             const formData = new URLSearchParams();
             formData.append("numero", cleanedPhone);
-            formData.append("amount", "2000");
+            formData.append("amount", amount.toString());
 
             const response = await fetch("https://gytx.dev/api/airtelmoney-web.php", {
                 method: "POST",
@@ -86,7 +112,8 @@ export default function PaymentModal({ onClose, onSuccess }) {
             const result = await response.json();
 
             if (/success|successfully processed/i.test(result.status_message)) {
-                showToast("Paiement validé !", "success");
+                showToast(`Merci pour les ${amount} CFA 😘`, "success");
+                triggerConfetti();
                 onSuccess();
             } else {
                 showToast(result.status_message || "Échec du paiement", "error");
@@ -98,7 +125,6 @@ export default function PaymentModal({ onClose, onSuccess }) {
         }
     };
 
-
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white w-full max-w-sm rounded-xl shadow-xl p-6 text-center relative">
@@ -109,11 +135,9 @@ export default function PaymentModal({ onClose, onSuccess }) {
                     ✖
                 </button>
 
-                <h2 className="text-xl font-bold text-pink-600 mb-2">Débloque la vidéo</h2>
                 <p className="text-gray-700 mb-4 italic">
                     Tu veux me voir vraiment ? Approche...
                 </p>
-
 
                 <input
                     type="tel"
@@ -132,15 +156,9 @@ export default function PaymentModal({ onClose, onSuccess }) {
                     {isLoading ? (
                         <span className="loader"></span>
                     ) : (
-                        "Lancer le paiement"
+                        `Débloquer pour ${amount} CFA`
                     )}
                 </button>
-
-                <p className="mt-4 text-sm text-gray-600">
-                    Je te laisse mon <span className="text-green-600 font-bold">WhatsApp</span>…
-                    et un accès à moi comme jamais.
-                </p>
-
             </div>
 
             {/* Loader animation */}

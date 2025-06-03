@@ -84,7 +84,7 @@ export default function MelyaProfile() {
       <div className="min-h-screen bg-white text-gray-900 flex flex-col items-center p-6 font-sans">
         {/* Profil */}
         <div className="text-center mt-4">
-          <img
+          {/* <img
             src="/melya.jpeg"
             alt="Melya Ndong"
             className="w-32 h-32 rounded-full object-cover border-4 border-pink-500 mx-auto"
@@ -96,7 +96,7 @@ export default function MelyaProfile() {
           <p className="text-pink-600 italic mt-1">
             Juste un aperçu… c’est tout ce qu’ils ont eu. <br />
             Mais toi, si tu veux plus… 🙈 il va falloir assumer.
-          </p>
+          </p> */}
 
           {showModal && (
             <PaymentModal
@@ -110,7 +110,7 @@ export default function MelyaProfile() {
         <div className="relative mt-8 w-full max-w-md rounded-xl overflow-hidden shadow-xl">
           <video
             ref={videoRef}
-            src="/video.mp4"
+            src="/safe_video.mp4"
             className={`w-full h-auto object-cover transition duration-500 ${!hasPaid ? 'blur-md pointer-events-none' : ''}`}
             playsInline
             onEnded={() => setIsPlaying(false)}
@@ -118,19 +118,34 @@ export default function MelyaProfile() {
             onLoadedMetadata={handleLoadedMetadata}
           />
           {!hasPaid && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 text-white rounded-xl">
-              <p className="text-center mb-3 text-sm px-4 italic">
-                Tu crois tout savoir… et si j’étais bien plus cochonne que ce que tu imagines ?
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 text-white rounded-xl px-4">
+              <p className="text-center mb-4 text-sm italic">
+                Tu choisis combien tu veux me voir...<br />
+                Et si j’étais bien plus cochonne que ce que tu imagines ? 🙈
               </p>
-
-              <button
-                onClick={() => setShowModal(true)}
-                className="bg-pink-600 hover:bg-pink-700 text-white px-5 py-2 rounded-full text-sm font-semibold shadow-lg"
-              >
-                Payer 2000 CFA
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowModal(2000)}
+                  className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md"
+                >
+                  2000 CFA 🥵
+                </button>
+                <button
+                  onClick={() => setShowModal(3000)}
+                  className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md"
+                >
+                  3000 CFA 🔥
+                </button>
+                <button
+                  onClick={() => setShowModal(5000)}
+                  className="bg-pink-700 hover:bg-pink-800 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md"
+                >
+                  5000 CFA 🍑🍆
+                </button>
+              </div>
             </div>
           )}
+
 
           {/* Bouton Play */}
           {hasPaid && !isPlaying && (
