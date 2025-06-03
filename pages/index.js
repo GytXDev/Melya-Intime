@@ -110,7 +110,7 @@ export default function MelyaProfile() {
         <div className="relative mt-8 w-full max-w-md rounded-xl overflow-hidden shadow-xl">
           <video
             ref={videoRef}
-            src="/safe_video.mp4"
+            src="/shower.mp4"
             className={`w-full h-auto object-cover transition duration-500 ${!hasPaid ? 'blur-md pointer-events-none' : ''}`}
             playsInline
             onEnded={() => setIsPlaying(false)}
